@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Buscador de CEP</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <style>
+    #caixa{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        
+    }
+    #titulo{
+        margin-top:3rem;
+        color: white;
+        padding: 1rem;
+        background-color: #00d1b2;
+
+        border-radius: 10px;
+    }
+    #info{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    </style>
+</head>
+<body>
+    
+    <div class="container" id="caixa">
+        <h1 class="mb-5">Buscador de CEP</h1>
+
+        <h3 id="carregando"></h3>
+            <input class="form-control"id="input" onkeyup="buscarcep()"  name="cep" placeholder="Digite o cep para encontrar endereço">         
+            <h2 id="titulo" hidden></h2>
+            <div id="info">
+            <p id="rua"></p>
+            <p id="bairro"></p>
+            <p id="cidade"></p>
+            <p id="uf"></p>    
+            <p id="ibge"></p>    
+            </div>       
+          
+    </div>   
+    </div>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script>
+
+        
+        function buscarcep() {
+       let pegacep =  document.querySelector("#input")
+       .value
+            
+        let tamanho = pegacep.length
+
+        if(tamanho >= 8){
+           fetch('https://viacep.com.br/ws/'+pegacep+'/json//')
+   .then(function(response){
+       return response.json()
+   })
+   .then(function(res){
+      cep = res
+      document.querySelector("#titulo").removeAttribute('hidden', false)
+      document.querySelector("#titulo").textContent ="ENDEREÇO ENCONTRADO"
+      document.querySelector("#rua").textContent ="RUA: "+cep.logradouro+"."
+      document.querySelector("#bairro").textContent ="Bairro: "+cep.bairro+"."
+      document.querySelector("#cidade").textContent ="Cidade: "+cep.localidade+"."
+      document.querySelector("#uf").textContent ="Estado: "+cep.uf+"."
+      document.querySelector("#ibge").textContent ="Codigo IBGE: "+cep.ibge+"."
+
+      document.querySelector("#carregando").style.display ="none"
+      document.querySelector("#limpar").removeAttribute('hidden', false)
+   
+   })
+        }if(tamanho < 8){
+            document.querySelector("#carregando").textContent = "buscando cep..."
+           }
+       }
+
+     
+
+
+   </script>
+</body>
+</html>
